@@ -2,86 +2,109 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>For You 🤍🎶</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For You 🤍</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Dancing+Script:wght@600&display=swap" rel="stylesheet">
 
 <style>
 body{
     margin:0;
-    height:100vh;
-    overflow:hidden;
+    min-height:100vh;
     display:flex;
     justify-content:center;
     align-items:center;
     background:linear-gradient(135deg,#3a0026,#5c003f,#1a0012);
     font-family:'Playfair Display', serif;
-    position:relative;
+    overflow:hidden;
 }
 
-/* Soft white glow overlay */
-body::before{
-    content:"";
-    position:absolute;
-    width:700px;
-    height:700px;
-    background:radial-gradient(circle,#ffffff33,transparent 70%);
-    filter:blur(100px);
-    top:50%;
-    left:50%;
-    transform:translate(-50%,-50%);
-    z-index:0;
-}
-
-/* Bottom white fade */
-body::after{
-    content:"";
-    position:absolute;
-    bottom:0;
+/* Loading Screen */
+#loader{
+    position:fixed;
     width:100%;
-    height:200px;
-    background:linear-gradient(to top, rgba(255,255,255,0.15), transparent);
-    z-index:0;
+    height:100%;
+    background:#1a0012;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    flex-direction:column;
+    color:white;
+    font-family:'Dancing Script', cursive;
+    font-size:2em;
+    z-index:1000;
+    animation:fadeOut 2s ease forwards;
+    animation-delay:2s;
 }
 
+@keyframes fadeOut{
+    to{opacity:0; visibility:hidden;}
+}
+
+/* Main Card */
 .container{
     text-align:center;
-    padding:35px;
-    border-radius:30px;
+    padding:30px 25px;
+    border-radius:35px;
+    background:rgba(255,255,255,0.15);
     backdrop-filter:blur(25px);
-    background:rgba(255,255,255,0.12);
-    box-shadow:0 25px 60px rgba(255,255,255,0.1);
+    box-shadow:0 30px 70px rgba(255,255,255,0.1);
+    max-width:420px;
+    width:90%;
     position:relative;
-    z-index:2;
+}
+
+/* Lace Style Border */
+.container::before{
+    content:"";
+    position:absolute;
+    inset:-8px;
+    border-radius:40px;
+    border:2px solid rgba(255,255,255,0.4);
+    box-shadow:0 0 30px rgba(255,255,255,0.3);
+    pointer-events:none;
+}
+
+/* Rose Frame */
+.rose-wrapper{
+    padding:14px;
+    border-radius:30px;
+    background:linear-gradient(145deg,#ffffff,#ffd6e8);
+    box-shadow:
+        0 0 25px rgba(255,255,255,0.6),
+        0 0 60px rgba(255,182,193,0.5);
 }
 
 .rose{
-    width:320px;
-    max-width:90%;
-    border-radius:20px;
-    box-shadow:0 25px 60px rgba(255,182,193,0.4);
-    cursor:pointer;
-    transition:0.4s ease;
-}
-
-.rose:hover{
-    transform:scale(1.05);
-}
-
-.letter{
-    margin-top:30px;
-    padding:30px;
-    max-width:400px;
-    background:rgba(255,255,255,0.95);
+    width:100%;
     border-radius:25px;
-    box-shadow:0 20px 50px rgba(0,0,0,0.25);
+    cursor:pointer;
+    display:block;
+}
+
+/* Tap Hint */
+.tap-text{
+    margin-top:15px;
+    font-size:1em;
+    color:#fff;
+    opacity:0.8;
+    font-family:'Dancing Script', cursive;
+}
+
+/* Letter */
+.letter{
+    margin-top:35px;
+    padding:30px;
+    background:white;
+    border-radius:30px;
+    box-shadow:0 20px 50px rgba(0,0,0,0.2);
     display:none;
     animation:fadeIn 0.8s ease forwards;
 }
 
 .letter h2{
     font-family:'Dancing Script', cursive;
-    font-size:2.2em;
+    font-size:2.3em;
     color:#cc0066;
     margin-top:0;
 }
@@ -93,29 +116,42 @@ body::after{
 }
 
 @keyframes fadeIn{
-    from{opacity:0; transform:translateY(25px);}
+    from{opacity:0; transform:translateY(20px);}
     to{opacity:1; transform:translateY(0);}
 }
 
-.petal{
+/* Floating Hearts */
+.heart{
     position:fixed;
-    top:-50px;
-    width:18px;
-    height:18px;
-    background:radial-gradient(circle at 30% 30%, #ffffff, #ffb6d9);
-    border-radius:50% 70% 70% 50%;
-    opacity:0.7;
-    pointer-events:none;
-    animation:fall linear forwards;
-    z-index:1;
+    width:15px;
+    height:15px;
+    background:#ff99cc;
+    transform:rotate(45deg);
+    animation:floatUp linear forwards;
+    z-index:0;
 }
 
-@keyframes fall{
+.heart::before,
+.heart::after{
+    content:"";
+    position:absolute;
+    width:15px;
+    height:15px;
+    background:#ff99cc;
+    border-radius:50%;
+}
+
+.heart::before{ top:-8px; left:0; }
+.heart::after{ left:-8px; top:0; }
+
+@keyframes floatUp{
     to{
-        transform:translateY(110vh) rotate(360deg);
+        transform:translateY(-110vh) rotate(45deg);
+        opacity:0;
     }
 }
 
+/* Sparkles */
 .sparkle{
     position:fixed;
     width:4px;
@@ -124,30 +160,33 @@ body::after{
     border-radius:50%;
     opacity:0.8;
     animation:twinkle 2s infinite alternate;
-    z-index:1;
+    z-index:0;
 }
 
 @keyframes twinkle{
     from{opacity:0.2;}
     to{opacity:1;}
 }
-
-/* Hidden YouTube player */
-#yt-player{
-    display:none;
-}
 </style>
 </head>
 <body>
 
+<div id="loader">
+    A little surprise for you 🤍
+</div>
+
 <div class="container">
 
-    <img 
-        src="https://i.pinimg.com/736x/98/84/94/9884942884bc2368767f87799b7526e8.jpg"
-        alt="Pink Rose"
-        class="rose"
-        onclick="revealLove()"
-    >
+    <div class="rose-wrapper">
+        <img 
+            src="https://i.pinimg.com/736x/98/84/94/9884942884bc2368767f87799b7526e8.jpg"
+            alt="Pink Rose"
+            class="rose"
+            onclick="showLetter()"
+        >
+    </div>
+
+    <div class="tap-text">Tap the rose 🌹</div>
 
     <div class="letter" id="letter">
         <h2>For You 🤍</h2>
@@ -162,40 +201,22 @@ body::after{
 
 </div>
 
-<!-- YouTube audio player -->
-<iframe id="yt-player"
-    src="https://www.youtube.com/embed/izJkFwCOBds?autoplay=1&loop=1&playlist=izJkFwCOBds&controls=0&mute=0"
-    allow="autoplay"
-></iframe>
-
 <script>
-let musicStarted = false;
-
-function revealLove(){
+function showLetter(){
     document.getElementById("letter").style.display = "block";
-    
-    if (!musicStarted){
-        // start the music
-        const player = document.getElementById("yt-player");
-        player.src += "&autoplay=1";
-        musicStarted = true;
-    }
 }
 
-/* Falling petals */
-function createPetal(){
-    const petal = document.createElement("div");
-    petal.classList.add("petal");
-    petal.style.left = Math.random() * 100 + "vw";
-    petal.style.animationDuration = (6 + Math.random() * 4) + "s";
-    petal.style.opacity = Math.random();
-    document.body.appendChild(petal);
-
-    setTimeout(() => {
-        petal.remove();
-    }, 10000);
+/* Floating hearts */
+function createHeart(){
+    const heart = document.createElement("div");
+    heart.classList.add("heart");
+    heart.style.left = Math.random() * 100 + "vw";
+    heart.style.bottom = "-20px";
+    heart.style.animationDuration = (6 + Math.random() * 4) + "s";
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),10000);
 }
-setInterval(createPetal, 500);
+setInterval(createHeart,700);
 
 /* Sparkles */
 function createSparkle(){
@@ -204,12 +225,9 @@ function createSparkle(){
     sparkle.style.left = Math.random() * 100 + "vw";
     sparkle.style.top = Math.random() * 100 + "vh";
     document.body.appendChild(sparkle);
-
-    setTimeout(() => {
-        sparkle.remove();
-    }, 3000);
+    setTimeout(()=>sparkle.remove(),3000);
 }
-setInterval(createSparkle, 300);
+setInterval(createSparkle,400);
 </script>
 
 </body>
