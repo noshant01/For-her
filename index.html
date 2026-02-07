@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,6 +18,7 @@ body{
     background:linear-gradient(135deg,#3a0026,#5c003f,#1a0012);
     font-family:'Playfair Display', serif;
     overflow:hidden;
+    position:relative;
 }
 
 /* Loading Screen */
@@ -24,7 +26,7 @@ body{
     position:fixed;
     width:100%;
     height:100%;
-    background:#1a0012;
+    background:linear-gradient(135deg,#2a001a,#1a0012);
     display:flex;
     justify-content:center;
     align-items:center;
@@ -34,11 +36,21 @@ body{
     font-size:2em;
     z-index:1000;
     animation:fadeOut 2s ease forwards;
-    animation-delay:2s;
+    animation-delay:2.5s;
 }
 
 @keyframes fadeOut{
     to{opacity:0; visibility:hidden;}
+}
+
+.loader-heart{
+    font-size:2.5em;
+    animation:heartbeat 1s infinite;
+}
+
+@keyframes heartbeat{
+    0%,100%{transform:scale(1);}
+    50%{transform:scale(1.2);}
 }
 
 /* Main Card */
@@ -54,23 +66,11 @@ body{
     position:relative;
 }
 
-.container::before{
-    content:"";
-    position:absolute;
-    inset:-8px;
-    border-radius:40px;
-    border:2px solid rgba(255,255,255,0.4);
-    box-shadow:0 0 30px rgba(255,255,255,0.3);
-    pointer-events:none;
-}
-
 .rose-wrapper{
     padding:14px;
     border-radius:30px;
     background:linear-gradient(145deg,#ffffff,#ffd6e8);
-    box-shadow:
-        0 0 25px rgba(255,255,255,0.6),
-        0 0 60px rgba(255,182,193,0.5);
+    box-shadow:0 0 40px rgba(255,182,193,0.5);
 }
 
 .rose{
@@ -81,70 +81,88 @@ body{
 
 .tap-text{
     margin-top:15px;
-    font-size:1em;
-    color:#fff;
-    opacity:0.8;
     font-family:'Dancing Script', cursive;
+    color:white;
+    opacity:0.9;
 }
 
+/* Letter */
 .letter{
-    margin-top:30px;
-    padding:30px;
+    margin-top:25px;
+    padding:25px;
     background:white;
     border-radius:30px;
-    box-shadow:0 20px 50px rgba(0,0,0,0.2);
     display:none;
     animation:fadeIn 0.8s ease forwards;
 }
 
 .letter h2{
     font-family:'Dancing Script', cursive;
-    font-size:2.3em;
+    font-size:2em;
     color:#cc0066;
-}
-
-.letter p{
-    font-size:1.1em;
-    color:#444;
-    line-height:1.8;
 }
 
 .countdown{
-    margin-top:20px;
-    font-size:1em;
-    color:#cc0066;
-}
-
-input{
-    padding:10px;
-    border-radius:20px;
-    border:none;
-    outline:none;
     margin-top:15px;
-    text-align:center;
-    width:70%;
-}
-
-button{
-    margin-top:10px;
-    padding:8px 20px;
-    border:none;
-    border-radius:20px;
-    background:#ff99cc;
-    color:white;
-    cursor:pointer;
+    color:#cc0066;
+    font-size:0.9em;
 }
 
 @keyframes fadeIn{
     from{opacity:0; transform:translateY(20px);}
     to{opacity:1; transform:translateY(0);}
 }
+
+input{
+    padding:10px;
+    border-radius:20px;
+    border:none;
+    margin-top:15px;
+    text-align:center;
+    width:70%;
+}
+
+button{
+    margin-top:15px;
+    padding:10px 22px;
+    border:none;
+    border-radius:25px;
+    background:#ff6699;
+    color:white;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.button-group{
+    margin-top:20px;
+    position:relative;
+}
+
+#noBtn{
+    position:absolute;
+}
+
+/* Heart burst */
+.burst-heart{
+    position:fixed;
+    color:#ff3366;
+    font-size:20px;
+    animation:burst 1s ease forwards;
+}
+
+@keyframes burst{
+    to{
+        transform:translateY(-150px) scale(1.5);
+        opacity:0;
+    }
+}
 </style>
 </head>
 <body>
 
 <div id="loader">
-    A little surprise for you 🤍
+    <div class="loader-heart">💖</div>
+    A little surprise for you...
 </div>
 
 <div class="container">
@@ -152,7 +170,6 @@ button{
     <div class="rose-wrapper">
         <img 
             src="https://i.pinimg.com/736x/98/84/94/9884942884bc2368767f87799b7526e8.jpg"
-            alt="Pink Rose"
             class="rose"
             onclick="askName()"
         >
@@ -170,6 +187,11 @@ button{
         <h2 id="title"></h2>
         <p id="message"></p>
         <div class="countdown" id="countdown"></div>
+
+        <div class="button-group">
+            <button onclick="sayYes()">Will you be mine forever? 🤍</button>
+            <button id="noBtn" onclick="moveNo()">No 😢</button>
+        </div>
     </div>
 
 </div>
@@ -183,32 +205,42 @@ function showLetter(){
     const name = document.getElementById("nameInput").value || "My Love";
     document.getElementById("title").innerText = "For You, " + name + " 🤍";
     document.getElementById("message").innerText =
-    "Like this rose glowing softly in the light, my heart blooms quietly for you. Every moment with you feels special, and I can't wait to create more beautiful memories together.";
-    
+    "Like this rose glowing softly in the light, my heart blooms quietly for you. Every moment with you feels magical, and I want forever with you.";
     document.getElementById("letter").style.display="block";
     startCountdown();
 }
 
-/* Countdown Timer */
 function startCountdown(){
-    const targetDate = new Date("February 14, 2026 00:00:00").getTime(); // Change this date
-    const x = setInterval(function(){
+    const targetDate = new Date("February 14, 2026 00:00:00").getTime();
+    setInterval(function(){
         const now = new Date().getTime();
         const distance = targetDate - now;
-
-        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-
+        const days = Math.floor(distance/(1000*60*60*24));
         document.getElementById("countdown").innerText =
-        "Counting down to our special day 💕 " +
-        days + "d " + hours + "h " + minutes + "m ";
+        "Counting down to our special day 💕 " + days + " days";
+    },1000);
+}
 
-        if(distance < 0){
-            clearInterval(x);
-            document.getElementById("countdown").innerText = "Today is our special day 🤍";
-        }
-    }, 1000);
+/* Moving NO button */
+function moveNo(){
+    const btn = document.getElementById("noBtn");
+    const x = Math.random() * 200 - 100;
+    const y = Math.random() * 200 - 100;
+    btn.style.transform = `translate(${x}px, ${y}px)`;
+}
+
+/* YES button */
+function sayYes(){
+    for(let i=0;i<20;i++){
+        const heart=document.createElement("div");
+        heart.classList.add("burst-heart");
+        heart.innerHTML="💖";
+        heart.style.left=Math.random()*100+"vw";
+        heart.style.top=Math.random()*100+"vh";
+        document.body.appendChild(heart);
+        setTimeout(()=>heart.remove(),1000);
+    }
+    alert("You just made me the happiest person alive 🤍");
 }
 </script>
 
