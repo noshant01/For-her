@@ -54,7 +54,6 @@ body{
     position:relative;
 }
 
-/* Lace Style Border */
 .container::before{
     content:"";
     position:absolute;
@@ -65,7 +64,6 @@ body{
     pointer-events:none;
 }
 
-/* Rose Frame */
 .rose-wrapper{
     padding:14px;
     border-radius:30px;
@@ -79,10 +77,8 @@ body{
     width:100%;
     border-radius:25px;
     cursor:pointer;
-    display:block;
 }
 
-/* Tap Hint */
 .tap-text{
     margin-top:15px;
     font-size:1em;
@@ -91,9 +87,8 @@ body{
     font-family:'Dancing Script', cursive;
 }
 
-/* Letter */
 .letter{
-    margin-top:35px;
+    margin-top:30px;
     padding:30px;
     background:white;
     border-radius:30px;
@@ -106,7 +101,6 @@ body{
     font-family:'Dancing Script', cursive;
     font-size:2.3em;
     color:#cc0066;
-    margin-top:0;
 }
 
 .letter p{
@@ -115,57 +109,35 @@ body{
     line-height:1.8;
 }
 
+.countdown{
+    margin-top:20px;
+    font-size:1em;
+    color:#cc0066;
+}
+
+input{
+    padding:10px;
+    border-radius:20px;
+    border:none;
+    outline:none;
+    margin-top:15px;
+    text-align:center;
+    width:70%;
+}
+
+button{
+    margin-top:10px;
+    padding:8px 20px;
+    border:none;
+    border-radius:20px;
+    background:#ff99cc;
+    color:white;
+    cursor:pointer;
+}
+
 @keyframes fadeIn{
     from{opacity:0; transform:translateY(20px);}
     to{opacity:1; transform:translateY(0);}
-}
-
-/* Floating Hearts */
-.heart{
-    position:fixed;
-    width:15px;
-    height:15px;
-    background:#ff99cc;
-    transform:rotate(45deg);
-    animation:floatUp linear forwards;
-    z-index:0;
-}
-
-.heart::before,
-.heart::after{
-    content:"";
-    position:absolute;
-    width:15px;
-    height:15px;
-    background:#ff99cc;
-    border-radius:50%;
-}
-
-.heart::before{ top:-8px; left:0; }
-.heart::after{ left:-8px; top:0; }
-
-@keyframes floatUp{
-    to{
-        transform:translateY(-110vh) rotate(45deg);
-        opacity:0;
-    }
-}
-
-/* Sparkles */
-.sparkle{
-    position:fixed;
-    width:4px;
-    height:4px;
-    background:white;
-    border-radius:50%;
-    opacity:0.8;
-    animation:twinkle 2s infinite alternate;
-    z-index:0;
-}
-
-@keyframes twinkle{
-    from{opacity:0.2;}
-    to{opacity:1;}
 }
 </style>
 </head>
@@ -182,52 +154,62 @@ body{
             src="https://i.pinimg.com/736x/98/84/94/9884942884bc2368767f87799b7526e8.jpg"
             alt="Pink Rose"
             class="rose"
-            onclick="showLetter()"
+            onclick="askName()"
         >
     </div>
 
     <div class="tap-text">Tap the rose 🌹</div>
 
+    <div id="nameSection" style="display:none;">
+        <input type="text" id="nameInput" placeholder="Enter your name 🤍">
+        <br>
+        <button onclick="showLetter()">Continue</button>
+    </div>
+
     <div class="letter" id="letter">
-        <h2>For You 🤍</h2>
-        <p>
-            Like this rose glowing softly in the light,
-            my heart blooms quietly for you.
-            Every petal carries warmth,
-            every moment holds something beautiful —
-            just like you.
-        </p>
+        <h2 id="title"></h2>
+        <p id="message"></p>
+        <div class="countdown" id="countdown"></div>
     </div>
 
 </div>
 
 <script>
+function askName(){
+    document.getElementById("nameSection").style.display="block";
+}
+
 function showLetter(){
-    document.getElementById("letter").style.display = "block";
+    const name = document.getElementById("nameInput").value || "My Love";
+    document.getElementById("title").innerText = "For You, " + name + " 🤍";
+    document.getElementById("message").innerText =
+    "Like this rose glowing softly in the light, my heart blooms quietly for you. Every moment with you feels special, and I can't wait to create more beautiful memories together.";
+    
+    document.getElementById("letter").style.display="block";
+    startCountdown();
 }
 
-/* Floating hearts */
-function createHeart(){
-    const heart = document.createElement("div");
-    heart.classList.add("heart");
-    heart.style.left = Math.random() * 100 + "vw";
-    heart.style.bottom = "-20px";
-    heart.style.animationDuration = (6 + Math.random() * 4) + "s";
-    document.body.appendChild(heart);
-    setTimeout(()=>heart.remove(),10000);
-}
-setInterval(createHeart,700);
+/* Countdown Timer */
+function startCountdown(){
+    const targetDate = new Date("February 14, 2026 00:00:00").getTime(); // Change this date
+    const x = setInterval(function(){
+        const now = new Date().getTime();
+        const distance = targetDate - now;
 
-/* Sparkles */
-function createSparkle(){
-    const sparkle = document.createElement("div");
-    sparkle.classList.add("sparkle");
-    sparkle.style.left = Math.random() * 100 + "vw";
-    sparkle.style.top = Math.random() * 100 + "vh";
-    document.body.appendChild(sparkle);
-    setTimeout(()=>sparkle.remove(),3000);
+        const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+
+        document.getElementById("countdown").innerText =
+        "Counting down to our special day 💕 " +
+        days + "d " + hours + "h " + minutes + "m ";
+
+        if(distance < 0){
+            clearInterval(x);
+            document.getElementById("countdown").innerText = "Today is our special day 🤍";
+        }
+    }, 1000);
 }
-setInterval(createSparkle,400);
 </script>
 
 </body>
